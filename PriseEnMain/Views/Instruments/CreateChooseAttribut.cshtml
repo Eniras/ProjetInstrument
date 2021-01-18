@@ -1,0 +1,35 @@
+﻿
+@model IEnumerable<Attribut>
+@{
+    ViewData["Title"] = "Attributs";
+}
+
+<div>Attributs</div>
+<hr />
+<br />
+<p>
+    <a class="btn btn-outline-success rounded-0" asp-controller="Attributs" asp-action="Create">+ Create New One</a>
+</p>
+<form asp-controller="Instruments" asp-action="CreateChooseAttribut">
+    <p>
+        <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+@foreach (var item in Model)
+{
+    <div class="ml-3 mb-2">
+        <a class="list-group-item list-group-item-action text-primary">@item.Name</a>
+    </div>
+
+}
+<br />
+<div class="btn-container">
+    <div class="btn-container">
+        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseInstrumentSousjacent"><i data-feather="plus"></i> Back</a>
+        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseContrat"><i data-feather="plus"></i> Next</a>
+    </div>
+
+
+</div>

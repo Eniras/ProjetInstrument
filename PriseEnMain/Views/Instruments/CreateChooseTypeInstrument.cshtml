@@ -1,0 +1,36 @@
+﻿@model IEnumerable<TypeInstrument>
+@{
+    ViewData["Title"] = "Type Intruments";
+}
+
+<div>Type Instruments</div>
+<hr />
+<br />
+<p>
+    <a class="btn btn-outline-success rounded-0" asp-controller="TypeInstruments" asp-action="Create">+ Create New One</a>
+</p>
+<form asp-controller="Instruments" asp-action="CreateChooseTypeInstrument">
+    <p>
+        <input type="text" name="SearchString" >
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+@foreach (var item in Model)
+{
+
+    <div class="card-body">
+
+        <div class="ml-3 mb-2">
+            @*<a  class="list-group-item list-group-item-action text-primary" >@item.Name</a>*@
+            @Html.ActionLink(item.Name, "SelectItem" , "TypeInstrumentsController", item, new { @class = "list-group-item list-group-item-action text-primary" })
+
+        </div>
+
+    </div>
+
+}
+
+<div class="btn-container">
+    <a class="btn btn-outline-success rounded-0" asp-action="Index"><i data-feather="plus"></i> Back To List</a>
+    <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseEmetteur"><i data-feather="plus"></i> Next</a>
+</div>
