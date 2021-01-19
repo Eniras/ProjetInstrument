@@ -66,6 +66,17 @@ namespace PriseEnMain.Controllers
         }
 
         // GET: Emetteurs/Edit/5
+
+        public IActionResult SelectItem(Emetteur emetteur)
+        {
+
+            InstrumentsController._instrument.Emetteur = emetteur;
+       
+
+            return RedirectToAction("CreateChooseEmetteur", "Instruments", new { area = "" });
+        }
+
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

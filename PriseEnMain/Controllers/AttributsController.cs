@@ -65,6 +65,15 @@ namespace PriseEnMain.Controllers
             return View(attribut);
         }
 
+        public IActionResult SelectItem(Attribut attribut)
+        {
+
+            //InstrumentsController._instrument.Attributs = attribut;
+
+
+            return RedirectToAction("CreateChooseAttribut", "Instruments", new { area = "" });
+        }
+
         // GET: Attributs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

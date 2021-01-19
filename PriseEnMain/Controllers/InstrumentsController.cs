@@ -14,6 +14,9 @@ namespace PriseEnMain.Controllers
     {
         private readonly PartengContext _context;
         public static InstrumentSous_jacent _type =new  InstrumentSous_jacent();
+        public static Instrument _instrument = new Instrument();
+
+       
 
         public InstrumentsController(PartengContext context)
         {
@@ -68,6 +71,13 @@ namespace PriseEnMain.Controllers
                 instrumentSousjacents = instrumentSousjacents.Where(s => s.Name.Contains(searchString));
             }
 
+
+            if (!String.IsNullOrEmpty(InstrumentsController._type.Type.Name))
+            {
+                instrumentSousjacents = instrumentSousjacents.Where(s => s.Type.Equals(InstrumentsController._type.Type));
+            }
+
+
             return View(await instrumentSousjacents.ToListAsync());
         }
 
@@ -112,6 +122,7 @@ namespace PriseEnMain.Controllers
             }
 
             var instrument = await _context.Instruments
+                .Include(item => item.TypeInstrument)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (instrument == null)
             {
@@ -134,6 +145,12 @@ namespace PriseEnMain.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Instrument instrument)
         {
+            instrument.TypeInstrument = _instrument.TypeInstrument;
+            instrument.Emetteur = _instrument.Emetteur;
+            //instrument.instrumentSous_Jacent = _instrument.instrumentSous_Jacent;
+            instrument.Attributs= _instrument.Attributs;
+            instrument.Contrat = _instrument.Contrat
+                ;
             if (ModelState.IsValid)
             {
                 _context.Add(instrument);

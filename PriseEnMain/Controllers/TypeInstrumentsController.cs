@@ -41,8 +41,10 @@ namespace PriseEnMain.Controllers
         public IActionResult SelectItem(TypeInstrument type)
         {
             InstrumentsController._type.Type = type;
+            InstrumentsController._instrument.TypeInstrument = type;
+            //return RedirectToAction("Index");
 
-            return RedirectToAction("Index");
+            return RedirectToAction("CreateChooseTypeInstrument", "Instruments", new { area = "" });
 
 
         }

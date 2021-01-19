@@ -64,6 +64,14 @@ namespace PriseEnMain.Controllers
             }
             return View(contrat);
         }
+        public IActionResult SelectItem(Contrat contrat)
+        {
+
+            InstrumentsController._instrument.Contrat = contrat;
+
+
+            return RedirectToAction("CreateChooseContrat", "Instruments", new { area = "" });
+        }
 
         // GET: Contrats/Edit/5
         public async Task<IActionResult> Edit(int? id)

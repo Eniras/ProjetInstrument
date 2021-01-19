@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<TypeInstrument>
+
 @{
     ViewData["Title"] = "Type Intruments";
 }
@@ -15,6 +16,7 @@
         <input type="submit" value="Filter" />
     </p>
 </form>
+
 @foreach (var item in Model)
 {
 
@@ -22,13 +24,24 @@
 
         <div class="ml-3 mb-2">
             @*<a  class="list-group-item list-group-item-action text-primary" >@item.Name</a>*@
-            @Html.ActionLink(item.Name, "SelectItem" , "TypeInstrumentsController", item, new { @class = "list-group-item list-group-item-action text-primary" })
+            @Html.ActionLink(item.Name, "SelectItem" , "TypeInstruments", item, new { @class = "list-group-item list-group-item-action text-primary" })
 
         </div>
 
     </div>
 
 }
+
+@*<select multiple class="form-control" size="10">
+    @foreach (var item in Model)
+    {
+
+        <option class="ml-3 mb-2">
+            
+            @Html.ActionLink(item.Name, "SelectItem", "TypeInstruments", item, new { @class = "list-group-item list-group-item-action text-primary" })
+        </option>
+    }
+</select>*@
 
 <div class="btn-container">
     <a class="btn btn-outline-success rounded-0" asp-action="Index"><i data-feather="plus"></i> Back To List</a>

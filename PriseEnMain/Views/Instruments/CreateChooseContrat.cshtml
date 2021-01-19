@@ -19,9 +19,9 @@
 
 @foreach (var item in Model)
 {
-    <div class="ml-3 mb-2">
-        <a class="list-group-item list-group-item-action text-primary">@item.Name</a>
-    </div>
+<div class="ml-3 mb-2">
+    @Html.ActionLink(item.Name, "SelectItem", "Contrats", item, new { @class = "list-group-item list-group-item-action text-primary" })
+</div>
 
 }
 <br />

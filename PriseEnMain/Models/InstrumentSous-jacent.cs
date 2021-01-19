@@ -10,6 +10,7 @@ namespace PriseEnMain.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public int TypeId { get; set; }
         public TypeInstrument Type { get; set; }
     }
 }
