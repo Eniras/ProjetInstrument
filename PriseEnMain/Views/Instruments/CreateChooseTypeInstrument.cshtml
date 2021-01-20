@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TypeInstrument>
+﻿@model IEnumerable<PriseEnMain.Models.TypeInstrument>
 
 @{
     ViewData["Title"] = "Type Intruments";
@@ -10,38 +10,48 @@
 <p>
     <a class="btn btn-outline-success rounded-0" asp-controller="TypeInstruments" asp-action="Create">+ Create New One</a>
 </p>
-<form asp-controller="Instruments" asp-action="CreateChooseTypeInstrument">
+<form metho asp-controller="Instruments" asp-action="CreateChooseTypeInstrument">
     <p>
-        <input type="text" name="SearchString" >
+        <input type="text" name="SearchString">
         <input type="submit" value="Filter" />
     </p>
 </form>
 
-@foreach (var item in Model)
-{
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                @*<label asp-for="TypeInstrumentId" class="control-label"></label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.TypeInstrumentId, Model.TypesInstruments, "Select one", new { @class = "form-control" })
+                    </div>*@
+                @foreach (var item in Model)
+                {
+                    <div class="ml-3 mb-2">
+                        @Html.ActionLink(item.Name, "Create", "Instruments", new { typeId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+                    </div>
+                }
 
-    <div class="card-body">
-
-        <div class="ml-3 mb-2">
-            @*<a  class="list-group-item list-group-item-action text-primary" >@item.Name</a>*@
-            @Html.ActionLink(item.Name, "SelectItem" , "TypeInstruments", item, new { @class = "list-group-item list-group-item-action text-primary" })
-
-        </div>
-
+            </div>
+        </form>
     </div>
-
-}
-
+</div>
 @*<select multiple class="form-control" size="10">
-    @foreach (var item in Model)
-    {
+        @foreach (var item in Model)
+        {
 
-        <option class="ml-3 mb-2">
-            
-            @Html.ActionLink(item.Name, "SelectItem", "TypeInstruments", item, new { @class = "list-group-item list-group-item-action text-primary" })
-        </option>
-    }
-</select>*@
+            <option class="ml-3 mb-2">
+
+                @Html.ActionLink(item.Name, "SelectItem", "TypeInstruments", item, new { @class = "list-group-item list-group-item-action text-primary" })
+            </option>
+        }
+    </select>*@
 
 <div class="btn-container">
     <a class="btn btn-outline-success rounded-0" asp-action="Index"><i data-feather="plus"></i> Back To List</a>

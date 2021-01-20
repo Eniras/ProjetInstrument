@@ -85,6 +85,8 @@ namespace PriseEnMain.Controllers
             return RedirectToAction("Edit", "InstrumentSous_jacent", new { area = "" });
         }
 
+
+
         [HttpGet]
         public ActionResult Register(InstrumentSous_jacent instrusmentSous_jacent)
         {

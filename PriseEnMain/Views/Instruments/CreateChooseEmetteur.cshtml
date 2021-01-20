@@ -18,13 +18,47 @@
 </form>
 
 
-@foreach (var item in Model)
-{
-<div class="ml-3 mb-2">
-    @Html.ActionLink(item.Name, "SelectItem", "Emetteurs", item, new { @class = "list-group-item list-group-item-action text-primary" })
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*<div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TypeInstrumentId" class="control-label"></label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.TypeInstrumentId, Model.TypesInstruments, "Select one",  new { @class = "form-control" } )
+                    </div>
+
+                </div>*@
+            @*<div class="form-group">
+                <label asp-for="EmetteurId" class="control-label"></label>
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.EmetteurId, Model.Emetteurs, "Select one")
+                </div>
+            </div>*@
+            @*<div class="form-group">
+                    <label asp-for="ContratId" class="control-label"></label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.ContratId, Model.Contrats, "Select one")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="InstrumentSousJacentId" class="control-label"></label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.InstrumentSousJacentId, Model.InstrumentsSousJacents, "Select one")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>*@
+        </form>
+    </div>
 </div>
 
-}
 <br />
 <div class="btn-container">
     <div class="btn-container">

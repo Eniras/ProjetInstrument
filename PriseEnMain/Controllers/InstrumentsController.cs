@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PriseEnMain.Data;
 using PriseEnMain.Models;
+using PriseEnMain.ViewModels;
 
 namespace PriseEnMain.Controllers
 {
     public class InstrumentsController : Controller
     {
         private readonly PartengContext _context;
-        public static InstrumentSous_jacent _type =new  InstrumentSous_jacent();
+        public static InstrumentSous_jacent _type = new InstrumentSous_jacent();
         public static Instrument _instrument = new Instrument();
 
-       
+
 
         public InstrumentsController(PartengContext context)
         {
@@ -42,14 +43,14 @@ namespace PriseEnMain.Controllers
             return View(await types.ToListAsync());
         }
 
-     
+
 
         public async Task<IActionResult> CreateChooseEmetteur(string searchString)
         {
             //return View(await _context.Emetteurs.ToListAsync());
 
             var emetteurs = from m in _context.Emetteurs
-                        select m;
+                            select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -59,27 +60,38 @@ namespace PriseEnMain.Controllers
             return View(await emetteurs.ToListAsync());
         }
 
+
+        public IActionResult SelectItem(TypeInstrument type)
+        {
+            ViewBag.selectItem = type;
+
+            return RedirectToAction("CreateChooseTypeInstrument", "Instruments", new { area = "" });
+        }
+
+
         public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString)
         {
             //return View(await _context.InstrumentSous_jacents.ToListAsync());
 
-            var instrumentSousjacents = from m in _context.InstrumentSous_jacents
-                            select m;
+            var instruments = from m in _context.Instruments
+                              select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                instrumentSousjacents = instrumentSousjacents.Where(s => s.Name.Contains(searchString));
+                instruments = instruments.Where(s => s.Name.Contains(searchString));
             }
 
+            //TypeInstrument TypeInstru = (TypeInstrument)ViewBag.selectItem;
 
-            if (!String.IsNullOrEmpty(InstrumentsController._type.Type.Name))
-            {
-                instrumentSousjacents = instrumentSousjacents.Where(s => s.Type.Equals(InstrumentsController._type.Type));
-            }
+            //if (!String.IsNullOrEmpty(TypeInstru.Name))
+            //{
+            //    instruments = instruments.Where(s => s.TypeInstrument.Id.Equals(TypeInstru.Id)); 
+            //}
 
 
-            return View(await instrumentSousjacents.ToListAsync());
+            return View(await instruments.ToListAsync());
         }
+
 
         public async Task<IActionResult> CreateChooseAttribut(string searchString)
         {
@@ -101,7 +113,7 @@ namespace PriseEnMain.Controllers
             //return View(await _context.Contrats.ToListAsync());
 
             var contrats = from m in _context.Contrats
-                            select m;
+                           select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -133,9 +145,26 @@ namespace PriseEnMain.Controllers
         }
 
         // GET: Instruments/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int typeId, string searchTerm)
         {
-            return View();
+            var typeInstrument = await _context.TypeInstruments.FindAsync(typeId);
+            if (typeInstrument == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                TypeInstrumentName = typeInstrument.Name,
+                TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
+                Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
+                Contrats = new SelectList(_context.Contrats, "Id", "Name"),
+                InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
+            };
+
+            return View(viewModel);
+
         }
 
         // POST: Instruments/Create
@@ -143,53 +172,83 @@ namespace PriseEnMain.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Instrument instrument)
+        public async Task<IActionResult> Create(CreateInstrumentVM viewModel)
         {
-            instrument.TypeInstrument = _instrument.TypeInstrument;
-            instrument.Emetteur = _instrument.Emetteur;
-            //instrument.instrumentSous_Jacent = _instrument.instrumentSous_Jacent;
-            instrument.Attributs= _instrument.Attributs;
-            instrument.Contrat = _instrument.Contrat
-                ;
+            Instrument instrument = new Instrument();
+
             if (ModelState.IsValid)
             {
+                instrument.Name = viewModel.Name;
+                instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
+                instrument.EmetteurId = viewModel.EmetteurId;
+                instrument.ContratId = viewModel.ContratId;
+                instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+
+
+
+
                 _context.Add(instrument);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(instrument);
+
+
+
+            return View(viewModel);
         }
 
-        // GET: Instruments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: InstrumentSous_jacent/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var instrument = await _context.Instruments
+                .FindAsync(id);
 
-            var instrument = await _context.Instruments.FindAsync(id);
             if (instrument == null)
             {
                 return NotFound();
             }
-            return View(instrument);
+
+            var viewModel = new EditInstrumentSousJacentVM
+            {
+                Id = instrument.Id,
+                Name = instrument.Name,
+                TypeInstrumentId = instrument.TypeInstrumentId,
+                EmetteurId = instrument.EmetteurId,
+                ContratId = instrument.ContratId,
+                InstrumentSousJacentId = instrument.InstrumentSousJacentId,
+                TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
+                Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
+                Contrats = new SelectList(_context.Contrats, "Id", "Name"),
+                InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
+            };
+
+            return View(viewModel);
         }
 
-        // POST: Instruments/Edit/5
+        // POST: InstrumentSous_jacent/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Instrument instrument)
+        public async Task<IActionResult> Edit(int id, EditInstrumentSousJacentVM viewModel)
         {
-            if (id != instrument.Id)
+            var instrument = await _context.Instruments
+                .FindAsync(id);
+
+            if (id != viewModel.Id || instrument == null)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                instrument.Name = viewModel.Name;
+                instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
+                instrument.EmetteurId = viewModel.EmetteurId;
+                instrument.ContratId = viewModel.ContratId;
+                instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+
                 try
                 {
                     _context.Update(instrument);
@@ -197,20 +256,19 @@ namespace PriseEnMain.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!InstrumentExists(instrument.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
+
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(instrument);
-        }
 
+            viewModel.TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name", viewModel.TypeInstrumentId);
+            viewModel.Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name", viewModel.EmetteurId);
+            viewModel.Contrats = new SelectList(_context.Contrats, "Id", "Name", viewModel.ContratId);
+            viewModel.InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name", viewModel.InstrumentSousJacentId);
+
+            return View(viewModel);
+        }
         // GET: Instruments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<InstrumentSous_jacent>
+@model IEnumerable<Instrument>
 @{
     ViewData["Title"] = "Intruments Sous-jacents";
 }
@@ -20,7 +20,7 @@
 @foreach (var item in Model)
 {
 <div class="ml-3 mb-2"> 
-    @Html.ActionLink(item.Name, "SelectItem", "InstrumentSous_jacent", item, new { @class = "list-group-item list-group-item-action text-primary" })
+    @Html.ActionLink(item.Name, "SelectItem", "TypeInstrument", item, new { @class = "list-group-item list-group-item-action text-primary" })
 </div>
 
 }

@@ -1,4 +1,4 @@
-﻿@model PriseEnMain.Models.Instrument
+﻿@model PriseEnMain.ViewModels.CreateInstrumentVM
 
 @{
     ViewData["Title"] = "Create";
@@ -7,6 +7,13 @@
 <h1>Create</h1>
 
 <h4>Instrument</h4>
+<p>Type d'instrument : @Model.TypeInstrumentName</p>
+<form asp-controller="Instruments" asp-action="Create">
+    <p>
+        <input type="text" name="searchTerm">
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,7 +25,39 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="TypeInstrumentId" class="control-label"></label>
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.TypeInstrumentId, Model.TypesInstruments, "Select one", new { @class = "form-control" })
+                </div>
+                @*@foreach (var item in Model.TypesInstruments)
+                {
+                    <div class="ml-3 mb-2">
+                        @Html.ActionLink(item.Text, "", "", new { Id = item.Value }, new { @class = "list-group-item list-group-item-action text-primary" })
+                    </div>
+
+                }*@
+
+            </div>
+            <div class="form-group">
+                <label asp-for="EmetteurId" class="control-label"></label>
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.EmetteurId, Model.Emetteurs, "Select one")
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContratId" class="control-label"></label>
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.ContratId, Model.Contrats, "Select one")
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="InstrumentSousJacentId" class="control-label"></label>
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.InstrumentSousJacentId, Model.InstrumentsSousJacents, "Select one")
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
