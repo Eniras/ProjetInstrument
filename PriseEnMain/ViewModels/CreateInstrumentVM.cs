@@ -13,11 +13,14 @@ namespace PriseEnMain.ViewModels
         public string Name { get; set; }
 
         public int TypeInstrumentId { get; set; }
-        public string InstrumentName { get; set; }
+        public string TypeInstrumentName { get; set; }
+        
         public int? EmetteurId { get; set; }
+        public string EmetteurName { get; set; }
         public int? ContratId { get; set; }
+        public string ContratName { get; set; }
         public int? InstrumentSousJacentId { get; set; }
-
+        public string InstrumentName { get; set; }
         public SelectList TypesInstruments { get; set; }
         public IEnumerable<EmetteurVM> Emetteurs { get; set; }
         public IEnumerable<ContratsVM> Contrats { get; set; }
