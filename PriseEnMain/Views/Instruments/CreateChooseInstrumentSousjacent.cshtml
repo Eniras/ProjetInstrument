@@ -17,18 +17,20 @@
     </p>
 </form>
 
-@foreach (var item in Model)
-{
-<div class="ml-3 mb-2"> 
-    @Html.ActionLink(item.Name, "SelectItem", "TypeInstrument", item, new { @class = "list-group-item list-group-item-action text-primary" })
-</div>
-
-}
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        @foreach (var item in Model)
+        {
+            @Html.ActionLink(item.Name, "CreateChooseInstrumentSousjacent", "Instruments", new { instrumentId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+        }
+    </div>
+</form>
 <br />
 <div class="btn-container">
     <div class="btn-container">
         <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseEmetteur"><i data-feather="plus"></i> Back</a>
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseAttribut"><i data-feather="plus"></i> Next</a>
+        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseContrat"><i data-feather="plus"></i> Next</a>
     </div>
 
 

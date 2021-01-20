@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,8 +31,13 @@ namespace PriseEnMain.Controllers
             return View(await _context.Instruments.ToListAsync());
         }
 
-        public async Task<IActionResult> CreateChooseTypeInstrument(string searchString)
+        public async Task<IActionResult> CreateChooseTypeInstrument(string searchString, int typeId)
         {
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+            };
+
             var types = from m in _context.TypeInstruments
                         select m;
 
@@ -45,19 +51,27 @@ namespace PriseEnMain.Controllers
 
 
 
-        public async Task<IActionResult> CreateChooseEmetteur(string searchString)
+        public async Task<IActionResult> CreateChooseEmetteur(string searchString, int typeId, CancellationToken cancellationToken)
         {
-            //return View(await _context.Emetteurs.ToListAsync());
-
-            var emetteurs = from m in _context.Emetteurs
-                            select m;
+            var query = _context.Emetteurs
+                .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                emetteurs = emetteurs.Where(s => s.Name.Contains(searchString));
+                query = query.Where(s => s.Name.Contains(searchString));
             }
+            
+            var emetteurs = await query
+                .Select(item => new EmetteurVM { Id = item.Id, Name = item.Name })
+                .ToListAsync(cancellationToken);
 
-            return View(await emetteurs.ToListAsync());
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                Emetteurs = emetteurs
+            };
+
+            return View(viewModel);
         }
 
 
@@ -69,8 +83,12 @@ namespace PriseEnMain.Controllers
         }
 
 
-        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString)
+        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int intrusmentId)
         {
+            var viewModel = new CreateInstrumentVM
+            {
+                InstrumentSousJacentId = intrusmentId,
+            };
             //return View(await _context.InstrumentSous_jacents.ToListAsync());
 
             var instruments = from m in _context.Instruments
@@ -145,10 +163,10 @@ namespace PriseEnMain.Controllers
         }
 
         // GET: Instruments/Create
-        public async Task<IActionResult> Create(int typeId, string searchTerm)
+        public async Task<IActionResult> Create(int typeId, int emetteurId, int instrumentId, int contratId)
         {
-            var typeInstrument = await _context.TypeInstruments.FindAsync(typeId);
-            if (typeInstrument == null)
+            var instru = await _context.Instruments.FindAsync(instrumentId);
+            if (instru == null)
             {
                 return NotFound();
             }
@@ -156,9 +174,12 @@ namespace PriseEnMain.Controllers
             var viewModel = new CreateInstrumentVM
             {
                 TypeInstrumentId = typeId,
-                TypeInstrumentName = typeInstrument.Name,
+                EmetteurId = emetteurId,
+                ContratId = contratId,
+                InstrumentSousJacentId = instrumentId,
+                InstrumentName = instru.Name,
                 TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
-                Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
+               // Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
                 Contrats = new SelectList(_context.Contrats, "Id", "Name"),
                 InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
             };
@@ -178,7 +199,7 @@ namespace PriseEnMain.Controllers
 
             if (ModelState.IsValid)
             {
-                instrument.Name = viewModel.Name;
+                instrument.Name = viewModel.InstrumentName;
                 instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
                 instrument.EmetteurId = viewModel.EmetteurId;
                 instrument.ContratId = viewModel.ContratId;

@@ -7,7 +7,7 @@
 <h1>Create</h1>
 
 <h4>Instrument</h4>
-<p>Type d'instrument : @Model.TypeInstrumentName</p>
+<p>Type d'instrument : @Model.InstrumentName</p>
 <form asp-controller="Instruments" asp-action="Create">
     <p>
         <input type="text" name="searchTerm">
@@ -29,21 +29,13 @@
                 <div class="form-group">
                     @Html.DropDownListFor(model => model.TypeInstrumentId, Model.TypesInstruments, "Select one", new { @class = "form-control" })
                 </div>
-                @*@foreach (var item in Model.TypesInstruments)
-                {
-                    <div class="ml-3 mb-2">
-                        @Html.ActionLink(item.Text, "", "", new { Id = item.Value }, new { @class = "list-group-item list-group-item-action text-primary" })
-                    </div>
-
-                }*@
-
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="EmetteurId" class="control-label"></label>
                 <div class="form-group">
                     @Html.DropDownListFor(model => model.EmetteurId, Model.Emetteurs, "Select one")
                 </div>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="ContratId" class="control-label"></label>
                 <div class="form-group">
