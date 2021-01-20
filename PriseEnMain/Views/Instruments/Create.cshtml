@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Recapitulatif</h1>
 
 <h4>Instrument</h4>
 <p>Type d'instrument : @Model.InstrumentName</p>
@@ -36,18 +36,18 @@
                     @Html.DropDownListFor(model => model.EmetteurId, Model.Emetteurs, "Select one")
                 </div>
             </div>*@
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="ContratId" class="control-label"></label>
                 <div class="form-group">
                     @Html.DropDownListFor(model => model.ContratId, Model.Contrats, "Select one")
                 </div>
-            </div>
-            <div class="form-group">
+            </div>*@
+            @*<div class="form-group">
                 <label asp-for="InstrumentSousJacentId" class="control-label"></label>
                 <div class="form-group">
                     @Html.DropDownListFor(model => model.InstrumentSousJacentId, Model.InstrumentsSousJacents, "Select one")
                 </div>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -55,8 +55,12 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="btn-container">
+    <div class="btn-container">
+        @Html.ActionLink("Back", "CreateChooseContrat", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = Model.ContratId}, new { @class = "btn btn-outline-success rounded-0" })
+    </div>
+
+
 </div>
 
 @section Scripts {

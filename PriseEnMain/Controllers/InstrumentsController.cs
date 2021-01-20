@@ -83,31 +83,42 @@ namespace PriseEnMain.Controllers
         }
 
 
-        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int intrusmentId)
+        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int typeId,int emetteurId, CancellationToken cancellationToken)
         {
-            var viewModel = new CreateInstrumentVM
-            {
-                InstrumentSousJacentId = intrusmentId,
-            };
-            //return View(await _context.InstrumentSous_jacents.ToListAsync());
-
-            var instruments = from m in _context.Instruments
-                              select m;
+            var instru = await _context.Instruments.FindAsync(typeId);
+            var query = _context.Instruments
+                .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                instruments = instruments.Where(s => s.Name.Contains(searchString));
+                query = query.Where(s => s.Name.Contains(searchString));
             }
 
             //TypeInstrument TypeInstru = (TypeInstrument)ViewBag.selectItem;
 
-            //if (!String.IsNullOrEmpty(TypeInstru.Name))
-            //{
-            //    instruments = instruments.Where(s => s.TypeInstrument.Id.Equals(TypeInstru.Id)); 
-            //}
+            if (!String.IsNullOrEmpty(instru.Name))
+            {
+                query = query.Where(s => s.TypeInstrument.Id.Equals(instru.Id));
+            }
 
 
-            return View(await instruments.ToListAsync());
+            var intrumens = await query
+                  .Select(item => new InstrumentsSousJacentsVM { Id = item.Id, Name = item.Name })
+                  .ToListAsync(cancellationToken);
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                InstrumentsSousJacents = intrumens
+            };
+
+            return View(viewModel);
+
+            
+
+
+      
         }
 
 
@@ -126,19 +137,32 @@ namespace PriseEnMain.Controllers
             return View(await attributs.ToListAsync());
         }
 
-        public async Task<IActionResult> CreateChooseContrat(string searchString)
-        {
-            //return View(await _context.Contrats.ToListAsync());
 
-            var contrats = from m in _context.Contrats
-                           select m;
+
+        public async Task<IActionResult> CreateChooseContrat(string searchString, int typeId, int emetteurId,int instrumentId, CancellationToken cancellationToken)
+        {
+           
+            var query = _context.Contrats
+                .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                contrats = contrats.Where(s => s.Name.Contains(searchString));
+                query = query.Where(s => s.Name.Contains(searchString));
             }
+            var contrats = await query
+                  .Select(item => new ContratsVM { Id = item.Id, Name = item.Name })
+                  .ToListAsync(cancellationToken);
 
-            return View(await contrats.ToListAsync());
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                InstrumentSousJacentId = instrumentId,
+                Contrats = contrats
+            };
+
+            return View(viewModel);
+
         }
 
 
@@ -180,8 +204,8 @@ namespace PriseEnMain.Controllers
                 InstrumentName = instru.Name,
                 TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
                // Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
-                Contrats = new SelectList(_context.Contrats, "Id", "Name"),
-                InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
+                //Contrats = new SelectList(_context.Contrats, "Id", "Name"),
+                //InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
             };
 
             return View(viewModel);

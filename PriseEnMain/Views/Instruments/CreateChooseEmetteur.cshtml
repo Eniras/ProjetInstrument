@@ -30,8 +30,7 @@
 <br />
 <div class="btn-container">
     <div class="btn-container">
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseTypeInstrument"><i data-feather="plus"></i> Back</a>
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseInstrumentSousjacent"><i data-feather="plus"></i> Next</a>
+        @Html.ActionLink("Back", "CreateChooseTypeInstrument", "Instruments", new { typeId = Model.TypeInstrumentId }, new { @class = "btn btn-outline-success rounded-0" })
     </div>
 
 

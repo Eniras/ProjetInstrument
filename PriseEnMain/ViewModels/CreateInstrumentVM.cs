@@ -20,11 +20,24 @@ namespace PriseEnMain.ViewModels
 
         public SelectList TypesInstruments { get; set; }
         public IEnumerable<EmetteurVM> Emetteurs { get; set; }
-        public SelectList Contrats { get; set; }
-        public SelectList InstrumentsSousJacents { get; set; }
+        public IEnumerable<ContratsVM> Contrats { get; set; }
+        public IEnumerable<InstrumentsSousJacentsVM> InstrumentsSousJacents { get; set; }
     }
 
     public class EmetteurVM
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+    }
+    public class InstrumentsSousJacentsVM
+    {
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+    }
+
+    public class ContratsVM
     {
         public int Id { get; set; }
 

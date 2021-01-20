@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<Contrat>
+@model PriseEnMain.ViewModels.CreateInstrumentVM
 @{
     ViewData["Title"] = "Contrats";
 }
@@ -20,9 +20,9 @@
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Contrats)
         {
-            @Html.ActionLink(item.Name, "CreateChooseContrat", "Instruments", new { contratId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+            @Html.ActionLink(item.Name, "Create", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
         }
     </div>
     <div class="form-group">
@@ -32,8 +32,7 @@
 <br />
 <div class="btn-container">
     <div class="btn-container">
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseInstrumentSousjacent"><i data-feather="plus"></i> Back</a>
-        <a class="btn btn-outline-success rounded-0" asp-action="Index"><i data-feather="plus"></i> Finish</a>
+        @Html.ActionLink("Back", "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
     </div>
 
 
