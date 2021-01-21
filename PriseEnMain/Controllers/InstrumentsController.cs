@@ -75,13 +75,6 @@ namespace PriseEnMain.Controllers
         }
 
 
-        public IActionResult SelectItem(TypeInstrument type)
-        {
-            ViewBag.selectItem = type;
-
-            return RedirectToAction("CreateChooseTypeInstrument", "Instruments", new { area = "" });
-        }
-
 
         public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int typeId,int emetteurId, CancellationToken cancellationToken)
         {
@@ -96,11 +89,9 @@ namespace PriseEnMain.Controllers
 
             //TypeInstrument TypeInstru = (TypeInstrument)ViewBag.selectItem;
 
-            if (!String.IsNullOrEmpty(instru.Name))
-            {
-                query = query.Where(s => s.TypeInstrument.Id.Equals(instru.Id));
-            }
-
+          
+                query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
+           
 
             var intrumens = await query
                   .Select(item => new InstrumentsSousJacentsVM { Id = item.Id, Name = item.Name })
@@ -115,10 +106,6 @@ namespace PriseEnMain.Controllers
 
             return View(viewModel);
 
-            
-
-
-      
         }
 
 
@@ -186,10 +173,10 @@ namespace PriseEnMain.Controllers
             return View(instrument);
         }
 
+
         // GET: Instruments/Create
         public async Task<IActionResult> Create(int typeId, int emetteurId, int instrumentId, int contratId)
         {
-            
             var instru = await _context.Instruments.FindAsync(instrumentId);
             var emet = await _context.Emetteurs.FindAsync(emetteurId);
             var type = await _context.TypeInstruments.FindAsync(typeId);
@@ -223,18 +210,13 @@ namespace PriseEnMain.Controllers
                 instrument.EmetteurId = viewModel.EmetteurId;
                 instrument.ContratId = viewModel.ContratId;
                 instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
-
-
-
-
                 _context.Add(instrument);
                 await _context.SaveChangesAsync();
-
             }
 
             return View(viewModel);
-
         }
+
 
         // POST: Instruments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -252,20 +234,15 @@ namespace PriseEnMain.Controllers
         //        instrument.EmetteurId = viewModel.EmetteurId;
         //        instrument.ContratId = viewModel.ContratId;
         //        instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
-
-
-
-
         //        _context.Add(instrument);
         //        await _context.SaveChangesAsync();
 
         //        return RedirectToAction(nameof(Index));
         //    }
-
-
-
         //    return View(viewModel);
         //}
+
+
 
         // GET: InstrumentSous_jacent/Edit/5
         public async Task<IActionResult> Edit(int id)
