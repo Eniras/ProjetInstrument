@@ -201,51 +201,80 @@ namespace PriseEnMain.Controllers
                
             };
 
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Save(int typeId, int emetteurId, int instrumentId, int contratId)
+        {
+            var instru = await _context.Instruments.FindAsync(instrumentId);
+            var emet = await _context.Emetteurs.FindAsync(emetteurId);
+            var type = await _context.TypeInstruments.FindAsync(typeId);
+            var contrat = await _context.Contrats.FindAsync(contratId);
+
+            if (instru == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                ContratId = contratId,
+                InstrumentSousJacentId = instrumentId,
+                InstrumentName = instru.Name,
+                TypeInstrumentName = type.Name,
+                EmetteurName = emet.Name,
+                ContratName = contrat.Name,
+                TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
+
+            };
+
             Instrument instrument = new Instrument();
 
             if (ModelState.IsValid)
             {
-                instrument.Name = viewModel.TypeInstrumentName+ " {} " +viewModel.EmetteurName;
+                instrument.Name = viewModel.TypeInstrumentName + " {} " + viewModel.EmetteurName;
                 instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
                 instrument.EmetteurId = viewModel.EmetteurId;
                 instrument.ContratId = viewModel.ContratId;
                 instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
                 _context.Add(instrument);
                 await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Instruments", new { area = "" });
             }
-
             return View(viewModel);
         }
 
 
-        // POST: Instruments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(CreateInstrumentVM viewModel)
-        //{
-        //    Instrument instrument = new Instrument();
+            // POST: Instruments/Create
+            // To protect from overposting attacks, enable the specific properties you want to bind to.
+            // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            //[HttpPost]
+            //[ValidateAntiForgeryToken]
+            //public async Task<IActionResult> Create(CreateInstrumentVM viewModel)
+            //{
+            //    Instrument instrument = new Instrument();
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        instrument.Name = viewModel.InstrumentName;
-        //        instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
-        //        instrument.EmetteurId = viewModel.EmetteurId;
-        //        instrument.ContratId = viewModel.ContratId;
-        //        instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
-        //        _context.Add(instrument);
-        //        await _context.SaveChangesAsync();
+            //    if (ModelState.IsValid)
+            //    {
+            //        instrument.Name = viewModel.InstrumentName;
+            //        instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
+            //        instrument.EmetteurId = viewModel.EmetteurId;
+            //        instrument.ContratId = viewModel.ContratId;
+            //        instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+            //        _context.Add(instrument);
+            //        await _context.SaveChangesAsync();
 
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(viewModel);
-        //}
+            //        return RedirectToAction(nameof(Index));
+            //    }
+            //    return View(viewModel);
+            //}
 
 
 
-        // GET: InstrumentSous_jacent/Edit/5
-        public async Task<IActionResult> Edit(int id)
+            // GET: InstrumentSous_jacent/Edit/5
+            public async Task<IActionResult> Edit(int id)
         {
             var instrument = await _context.Instruments
                 .FindAsync(id);
