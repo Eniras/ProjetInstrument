@@ -60,7 +60,7 @@ namespace PriseEnMain.Controllers
             {
                 _context.Add(contrat);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("CreateChooseContrat", "Instruments", new { area = "" });
             }
             return View(contrat);
         }

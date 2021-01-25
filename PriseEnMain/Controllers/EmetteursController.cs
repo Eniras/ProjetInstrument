@@ -60,7 +60,7 @@ namespace PriseEnMain.Controllers
             {
                 _context.Add(emetteur);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("CreateChooseEmetteur", "Instruments", new { area = "" });
             }
             return View(emetteur);
         }

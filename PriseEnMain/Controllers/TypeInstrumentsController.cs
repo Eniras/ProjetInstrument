@@ -86,7 +86,7 @@ namespace PriseEnMain.Controllers
             {
                 _context.Add(typeInstrument);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("CreateChooseTypeInstrument", "Instruments", new { area = "" });
             }
             return View(typeInstrument);
         }
