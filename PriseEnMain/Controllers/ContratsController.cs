@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PriseEnMain.Data;
 using PriseEnMain.Models;
+using PriseEnMain.ViewModels;
 
 namespace PriseEnMain.Controllers
 {
@@ -44,9 +45,18 @@ namespace PriseEnMain.Controllers
         }
 
         // GET: Contrats/Create
-        public IActionResult Create()
+        public IActionResult Create(int typeId, int emetteurId, int instrumentId)
         {
-            return View();
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                InstrumentSousJacentId = instrumentId,
+              
+
+            };
+
+            return View(viewModel);
         }
 
         // POST: Contrats/Create
@@ -54,15 +64,33 @@ namespace PriseEnMain.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Contrat contrat)
+        public async Task<IActionResult> Create( CreateInstrumentVM view)
         {
-            if (ModelState.IsValid)
-            {
+            Contrat contrat = new Contrat();
+            contrat.Name = view.ContratName;
+
+            
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(contrat);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("CreateChooseContrat", "Instruments", new { area = "" });
-            }
-            return View(contrat);
+                
+                return RedirectToAction("Create", "Instruments", new { typeId = view.TypeInstrumentId, emetteurId = view.EmetteurId, instrumentId = view.InstrumentSousJacentId, contratId = contrat.Id });
+            //}
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = view.TypeInstrumentId,
+                EmetteurId = view.EmetteurId,
+                InstrumentSousJacentId = view.InstrumentSousJacentId,
+                ContratName = view.ContratName,
+                ContratId = contrat.Id
+
+                //ContratName = Name,
+                //ContratId = contrat.Id
+
+            };
+
+            return View(viewModel);
         }
         public IActionResult SelectItem(Contrat contrat)
         {

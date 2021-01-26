@@ -8,7 +8,7 @@
 <hr />
 <br />
 <p>
-    <a class="btn btn-outline-success rounded-0" asp-controller="Contrats" asp-action="Create">+ Create New One</a>
+    @Html.ActionLink("+ Create New One", "Create", "Contrats", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
 </p>
 <form asp-controller="Instruments" asp-action="CreateChooseContrat">
     <p>

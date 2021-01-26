@@ -90,7 +90,7 @@ namespace PriseEnMain.Controllers
             //TypeInstrument TypeInstru = (TypeInstrument)ViewBag.selectItem;
 
           
-                query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
+             query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
            
 
             var intrumens = await query
