@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PriseEnMain.Data;
 using PriseEnMain.Models;
+using PriseEnMain.ViewModels;
 
 namespace PriseEnMain.Controllers
 {
@@ -72,7 +73,13 @@ namespace PriseEnMain.Controllers
         // GET: TypeInstruments/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateInstrumentVM
+            {
+                
+
+
+            };
+            return View(viewModel);
         }
 
         // POST: TypeInstruments/Create
@@ -80,15 +87,25 @@ namespace PriseEnMain.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] TypeInstrument typeInstrument)
+        public async Task<IActionResult> Create(CreateInstrumentVM view)
         {
-            if (ModelState.IsValid)
+            TypeInstrument type = new TypeInstrument();
+            type.Name = view.TypeInstrumentName;
+
+            
+            _context.Add(type);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("CreateChooseEmetteur", "Instruments", new { typeId = type.Id});
+
+            var viewModel = new CreateInstrumentVM
             {
-                _context.Add(typeInstrument);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("CreateChooseTypeInstrument", "Instruments", new { area = "" });
-            }
-            return View(typeInstrument);
+                TypeInstrumentId = view.TypeInstrumentId,
+
+            };
+
+
+            return View(viewModel);
         }
 
         // GET: TypeInstruments/Edit/5

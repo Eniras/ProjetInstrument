@@ -28,7 +28,7 @@
 </div>
 
 <div>
-    <a asp-controller="Instruments" asp-action="CreateChooseContrat">Back To Create Instrument</a>
+    @Html.ActionLink("Back To Instrument Sous-jacent", "CreateChooseContrat", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
 </div>
 
 @section Scripts {
