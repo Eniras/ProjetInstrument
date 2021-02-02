@@ -52,8 +52,6 @@ namespace PriseEnMain.Controllers
                 TypeInstrumentId = typeId,
                 EmetteurId = emetteurId,
                 InstrumentSousJacentId = instrumentId,
-              
-
             };
 
             return View(viewModel);
@@ -77,6 +75,7 @@ namespace PriseEnMain.Controllers
                 
                 return RedirectToAction("Create", "Instruments", new { typeId = view.TypeInstrumentId, emetteurId = view.EmetteurId, instrumentId = view.InstrumentSousJacentId, contratId = contrat.Id });
             //}
+
             var viewModel = new CreateInstrumentVM
             {
                 TypeInstrumentId = view.TypeInstrumentId,
@@ -84,9 +83,6 @@ namespace PriseEnMain.Controllers
                 InstrumentSousJacentId = view.InstrumentSousJacentId,
                 ContratName = view.ContratName,
                 ContratId = contrat.Id
-
-                //ContratName = Name,
-                //ContratId = contrat.Id
 
             };
 

@@ -22,7 +22,7 @@
     <div class="form-group">
         @foreach (var item in Model.Contrats)
         {
-            @Html.ActionLink(item.Name, "Create", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+            @Html.ActionLink(item.Name, "CreateChooseAttribut", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
         }
     </div>
 </form>

@@ -1,35 +1,40 @@
-﻿
-@model IEnumerable<Attribut>
+﻿@model PriseEnMain.ViewModels.CreateInstrumentVM
+
 @{
-    ViewData["Title"] = "Attributs";
+    ViewData["Title"] = "Create";
 }
 
-<div>Attributs</div>
+<h1>Create</h1>
+
+<h4>Plus d'informations</h4>
 <hr />
-<br />
-<p>
-    <a class="btn btn-outline-success rounded-0" asp-controller="Attributs" asp-action="Create">+ Create New One</a>
-</p>
-<form asp-controller="Instruments" asp-action="CreateChooseAttribut">
-    <p>
-        <input type="text" name="SearchString" />
-        <input type="submit" value="Filter" />
-    </p>
-</form>
-
-@foreach (var item in Model)
-{
-<div class="ml-3 mb-2">
-    @Html.ActionLink(item.Name, "SelectItem", "Attributs", item, new { @class = "list-group-item list-group-item-action text-primary" })
-</div>
-
-}
-<br />
-<div class="btn-container">
-    <div class="btn-container">
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseInstrumentSousjacent"><i data-feather="plus"></i> Back</a>
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseContrat"><i data-feather="plus"></i> Next</a>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateChooseAttribut">
+            <div class="text-danger"></div>
+            <div class="form-group">
+                @foreach (var item in Model.Attributs)
+                {
+                    @Html.DisplayFor(m => item.Name, new { @class = "control-label" })<br />
+                    <input asp-for="@item.value" type="@item.TypeAttribut" class="form-control" />
+                    <span class="text-danger"></span>
+                }
+            </div>
+            <div class="form-group">
+                <input asp-for="TypeInstrumentId" type="hidden" />
+                <input asp-for="EmetteurId" type="hidden" />
+                <input asp-for="InstrumentSousJacentId" type="hidden" />
+                <input asp-for="ContratId" type="hidden" />
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-
-
 </div>
+
+<div>
+    @Html.ActionLink("Back To Instrument Sous-jacent", "CreateChooseContrat", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

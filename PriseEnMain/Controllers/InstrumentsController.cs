@@ -109,24 +109,74 @@ namespace PriseEnMain.Controllers
         }
 
 
-        public async Task<IActionResult> CreateChooseAttribut(string searchString)
+        public async Task<IActionResult> CreateChooseAttribut(string searchString, int typeId, int emetteurId, int instrumentId,int contratId, CancellationToken cancellationToken)
         {
-            //return View(await _context.Attributs.ToListAsync());
-
-            var attributs = from m in _context.Attributs
-                            select m;
+            var query = _context.Attributs
+               .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                attributs = attributs.Where(s => s.Name.Contains(searchString));
+                query = query.Where(s => s.Name.Contains(searchString));
             }
 
-            return View(await attributs.ToListAsync());
+            query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
+
+            var attributs = await query
+                  .Select(item => new AttributVM { Id = item.Id, Name = item.Name, TypeAttribut = item.TypeAttribut })
+                  .ToListAsync(cancellationToken);
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                ContratId = contratId,
+                InstrumentSousJacentId = instrumentId,
+                Attributs = attributs
+            };
+
+            return View(viewModel);
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateChooseAttribut(CreateInstrumentVM view)
+        {
 
-        public async Task<IActionResult> CreateChooseContrat(string searchString, int typeId, int emetteurId,int instrumentId, CancellationToken cancellationToken)
+            var query = _context.Attributs
+               .AsQueryable();
+
+            query = query.Where(s => s.TypeInstrument.Id.Equals(view.TypeInstrumentId));
+
+            var attributs = await query
+                  .Select(item => new AttributVM
+                  {
+                      Id = item.Id,
+                      Name = item.Name,
+                      TypeAttribut = item.TypeAttribut,
+                      value = item.Value
+                  })
+                  .ToListAsync();
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = view.TypeInstrumentId,
+                EmetteurId = view.EmetteurId,
+                ContratId = view.ContratId,
+                InstrumentSousJacentId = view.InstrumentSousJacentId,
+                Attributs = attributs
+
+            };
+
+           // RedirectToAction("Create", "Instruments", new { typeId = view.TypeInstrumentId, emetteurId = view.EmetteurId, instrumentId = view.InstrumentSousJacentId, contratId = view.ContratId, attributs = view.Attributs });
+            //}
+            return View(viewModel);
+        
+    }
+
+
+
+    public async Task<IActionResult> CreateChooseContrat(string searchString, int typeId, int emetteurId,int instrumentId, CancellationToken cancellationToken)
         {
            
             var query = _context.Contrats
