@@ -15,17 +15,21 @@
 <p>Instrument Sous-jacent: @Model.InstrumentName</p>
 <br />
 <p>Nom du Contrat : @Model.ContratName</p>
-
-<hr />
-
-
-<div class="btn-container">
-    <div class="btn-container">
-        @Html.ActionLink("Back", "CreateChooseContrat", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = Model.ContratId }, new { @class = "btn btn-outline-success rounded-0" })
-        @Html.ActionLink("Register", "Save", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = Model.ContratId }, new { @class = "btn btn-outline-success rounded-0" })
-    </div>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<br />
+@for (int i = 0; i < Model.Attributs.Count; i++)
+{
+<p>@Model.Attributs[i].AttributeTypeName  :  @Model.Attributs[i].Value </p>
+<br />
 }
+
+
+    <div class="btn-container">
+        <div class="btn-container">
+            @Html.ActionLink("Back", "CreateChooseContrat", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = Model.ContratId }, new { @class = "btn btn-outline-success rounded-0" })
+            @Html.ActionLink("Register", "Save", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = Model.ContratId }, new { @class = "btn btn-outline-success rounded-0" })
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

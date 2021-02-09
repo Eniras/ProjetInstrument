@@ -140,9 +140,9 @@ namespace PriseEnMain.Controllers
                 Id = instrument.Id,
                 Name = instrument.Name,
                 TypeInstrumentId = instrument.TypeInstrumentId,
-                EmetteurId = instrument.EmetteurId,
-                ContratId = instrument.ContratId,
-                InstrumentSousJacentId = instrument.InstrumentSousJacentId,
+                //EmetteurId = instrument.EmetteurId,
+                //ContratId = instrument.ContratId,
+                //InstrumentSousJacentId = instrument.InstrumentSousJacentId,
                 TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
                 Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
                 Contrats = new SelectList(_context.Contrats, "Id", "Name"),
@@ -171,9 +171,9 @@ namespace PriseEnMain.Controllers
             {
                 instrument.Name = viewModel.Name;
                 instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
-                instrument.EmetteurId = viewModel.EmetteurId;
-                instrument.ContratId = viewModel.ContratId;
-                instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+                //instrument.EmetteurId = viewModel.EmetteurId;
+                //instrument.ContratId = viewModel.ContratId;
+                //instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
 
                 try
                 {

@@ -16,22 +16,27 @@
     </p>
 </form>
 
+@for (int i = 0; i < Model.Attributs.Count; i++)
+{
+    if (Model.Attributs[i].AttributeTypeValueType == "Emetteur")
+    {
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @foreach (var item in Model.Emetteurs)
+                {
+                    @Html.ActionLink(item.Name, "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+                }
+            </div>
+        </form>
+    }
+    
+}
+        <br />
+        <div class="btn-container">
+            <div class="btn-container">
+                @Html.ActionLink("Back", "CreateChooseTypeInstrument", "Instruments", new { typeId = Model.TypeInstrumentId }, new { @class = "btn btn-outline-success rounded-0" })
+            </div>
 
-<form asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        @foreach (var item in Model.Emetteurs)
-        {
-            @Html.ActionLink(item.Name, "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
-        }
-    </div>
-</form>
 
-<br />
-<div class="btn-container">
-    <div class="btn-container">
-        @Html.ActionLink("Back", "CreateChooseTypeInstrument", "Instruments", new { typeId = Model.TypeInstrumentId }, new { @class = "btn btn-outline-success rounded-0" })
-    </div>
-
-
-</div>
+        </div>

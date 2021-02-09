@@ -10,8 +10,8 @@ using PriseEnMain.Data;
 namespace PriseEnMain.Migrations
 {
     [DbContext(typeof(PartengContext))]
-    [Migration("20210119104942_Instrument")]
-    partial class Instrument
+    [Migration("20210208102710_first migration")]
+    partial class firstmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,12 +31,30 @@ namespace PriseEnMain.Migrations
                     b.Property<int?>("InstrumentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<int>("TypeAttributId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ValueContratId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ValueEmetteurId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ValueInstrumentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ValueOther")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("InstrumentId");
+
+                    b.HasIndex("TypeAttributId");
+
+                    b.HasIndex("ValueContratId");
+
+                    b.HasIndex("ValueEmetteurId");
 
                     b.ToTable("Attributs");
                 });
@@ -78,15 +96,6 @@ namespace PriseEnMain.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ContratId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("EmetteurId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("InstrumentSousJacentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -94,12 +103,6 @@ namespace PriseEnMain.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContratId");
-
-                    b.HasIndex("EmetteurId");
-
-                    b.HasIndex("InstrumentSousJacentId");
 
                     b.HasIndex("TypeInstrumentId");
 
@@ -126,6 +129,24 @@ namespace PriseEnMain.Migrations
                     b.ToTable("InstrumentSous_jacents");
                 });
 
+            modelBuilder.Entity("PriseEnMain.Models.TypeAttribut", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TypeAttributs");
+                });
+
             modelBuilder.Entity("PriseEnMain.Models.TypeInstrument", b =>
                 {
                     b.Property<int>("Id")
@@ -141,38 +162,57 @@ namespace PriseEnMain.Migrations
                     b.ToTable("TypeInstruments");
                 });
 
+            modelBuilder.Entity("PriseEnMain.Models.TypeInstrumentTypeAttribut", b =>
+                {
+                    b.Property<int>("TypeInstrumentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeAttributId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TypeInstrumentId", "TypeAttributId");
+
+                    b.HasIndex("TypeAttributId");
+
+                    b.ToTable("TypeInstrumentTypeAttributs");
+                });
+
             modelBuilder.Entity("PriseEnMain.Models.Attribut", b =>
                 {
-                    b.HasOne("PriseEnMain.Models.Instrument", null)
+                    b.HasOne("PriseEnMain.Models.Instrument", "Instrument")
                         .WithMany("Attributs")
                         .HasForeignKey("InstrumentId");
+
+                    b.HasOne("PriseEnMain.Models.TypeAttribut", "TypeAttribut")
+                        .WithMany()
+                        .HasForeignKey("TypeAttributId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PriseEnMain.Models.Contrat", "ValueContrat")
+                        .WithMany()
+                        .HasForeignKey("ValueContratId");
+
+                    b.HasOne("PriseEnMain.Models.Emetteur", "ValueEmetteur")
+                        .WithMany()
+                        .HasForeignKey("ValueEmetteurId");
+
+                    b.Navigation("Instrument");
+
+                    b.Navigation("TypeAttribut");
+
+                    b.Navigation("ValueContrat");
+
+                    b.Navigation("ValueEmetteur");
                 });
 
             modelBuilder.Entity("PriseEnMain.Models.Instrument", b =>
                 {
-                    b.HasOne("PriseEnMain.Models.Contrat", "Contrat")
-                        .WithMany()
-                        .HasForeignKey("ContratId");
-
-                    b.HasOne("PriseEnMain.Models.Emetteur", "Emetteur")
-                        .WithMany()
-                        .HasForeignKey("EmetteurId");
-
-                    b.HasOne("PriseEnMain.Models.Instrument", "InstrumentSousJacent")
-                        .WithMany()
-                        .HasForeignKey("InstrumentSousJacentId");
-
                     b.HasOne("PriseEnMain.Models.TypeInstrument", "TypeInstrument")
                         .WithMany()
                         .HasForeignKey("TypeInstrumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Contrat");
-
-                    b.Navigation("Emetteur");
-
-                    b.Navigation("InstrumentSousJacent");
 
                     b.Navigation("TypeInstrument");
                 });
@@ -188,9 +228,38 @@ namespace PriseEnMain.Migrations
                     b.Navigation("Type");
                 });
 
+            modelBuilder.Entity("PriseEnMain.Models.TypeInstrumentTypeAttribut", b =>
+                {
+                    b.HasOne("PriseEnMain.Models.TypeAttribut", "TypeAttribut")
+                        .WithMany("TypeInstrumentTypeAttributs")
+                        .HasForeignKey("TypeAttributId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PriseEnMain.Models.TypeInstrument", "TypeInstrument")
+                        .WithMany("TypeInstrumentTypeAttributs")
+                        .HasForeignKey("TypeInstrumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TypeAttribut");
+
+                    b.Navigation("TypeInstrument");
+                });
+
             modelBuilder.Entity("PriseEnMain.Models.Instrument", b =>
                 {
                     b.Navigation("Attributs");
+                });
+
+            modelBuilder.Entity("PriseEnMain.Models.TypeAttribut", b =>
+                {
+                    b.Navigation("TypeInstrumentTypeAttributs");
+                });
+
+            modelBuilder.Entity("PriseEnMain.Models.TypeInstrument", b =>
+                {
+                    b.Navigation("TypeInstrumentTypeAttributs");
                 });
 #pragma warning restore 612, 618
         }

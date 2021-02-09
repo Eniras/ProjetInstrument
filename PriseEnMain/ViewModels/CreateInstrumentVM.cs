@@ -25,6 +25,8 @@ namespace PriseEnMain.ViewModels
         public IEnumerable<EmetteurVM> Emetteurs { get; set; }
         public IEnumerable<ContratsVM> Contrats { get; set; }
         public IEnumerable<InstrumentsSousJacentsVM> InstrumentsSousJacents { get; set; }
+
+        public List<CreateAttributViewModel> Attributs { get; set; } = new List<CreateAttributViewModel>();
     }
 
     public class EmetteurVM
@@ -46,4 +48,6 @@ namespace PriseEnMain.ViewModels
 
         public string Name { get; set; }
     }
+
+    
 }

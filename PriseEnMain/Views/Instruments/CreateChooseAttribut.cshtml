@@ -1,35 +1,57 @@
 ﻿
-@model IEnumerable<Attribut>
+@model PriseEnMain.ViewModels.CreateInstrumentVM
 @{
-    ViewData["Title"] = "Attributs";
+    ViewData["Title"] = "Contrats";
 }
 
-<div>Attributs</div>
+<div>Autres Informations</div>
 <hr />
 <br />
 <p>
-    <a class="btn btn-outline-success rounded-0" asp-controller="Attributs" asp-action="Create">+ Create New One</a>
+    @Html.ActionLink("+ Create New One", "Create", "Contrats", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
 </p>
+
+
 <form asp-controller="Instruments" asp-action="CreateChooseAttribut">
-    <p>
-        <input type="text" name="SearchString" />
-        <input type="submit" value="Filter" />
-    </p>
+    @for (int i = 0; i < Model.Attributs.Count; i++)
+    {
+        if (Model.Attributs[i].AttributeTypeValueType != "Contrat"
+            && Model.Attributs[i].AttributeTypeValueType != "Instrument"
+            && Model.Attributs[i].AttributeTypeValueType != "Emetteur")
+        {
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="form-group row">
+                    <label asp-for="@Model.Attributs[i].Value" class="col-sm-2 col-form-label">@Model.Attributs[i].AttributeTypeName</label>
+                    <div class="col-sm-10">
+                        <input asp-for="@Model.Attributs[i].Value" class="form-control" type="@Model.Attributs[i].AttributeTypeValueType" />
+                        <span asp-validation-for="@Model.Attributs[i].Value" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" asp-for="@Model.Attributs[i].AttributeTypeId">
+            <input type="hidden" asp-for="@Model.Attributs[i].AttributeTypeName">
+            <input type="hidden" asp-for="@Model.Attributs[i].AttributeTypeValueType">
+
+        }
+
+    }
+
+    <div class="form-group">
+        <input asp-for="TypeInstrumentId" type="hidden" />
+        <input asp-for="EmetteurId" type="hidden" />
+        <input asp-for="InstrumentSousJacentId" type="hidden" />
+        <input asp-for="ContratId" type="hidden" />
+        <input type="submit" value="Next" class = "btn btn-outline-success rounded-0" />
+    </div>
 </form>
 
-@foreach (var item in Model)
-{
-<div class="ml-3 mb-2">
-    @Html.ActionLink(item.Name, "SelectItem", "Attributs", item, new { @class = "list-group-item list-group-item-action text-primary" })
-</div>
-
-}
-<br />
-<div class="btn-container">
+    <br />
     <div class="btn-container">
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseInstrumentSousjacent"><i data-feather="plus"></i> Back</a>
-        <a class="btn btn-outline-success rounded-0" asp-action="CreateChooseContrat"><i data-feather="plus"></i> Next</a>
+        <div class="btn-container">
+            @Html.ActionLink("Back", "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
+        </div>
+
+
     </div>
-
-
-</div>

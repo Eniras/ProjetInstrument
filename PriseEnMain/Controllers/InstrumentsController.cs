@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PriseEnMain.Data;
 using PriseEnMain.Models;
 using PriseEnMain.ViewModels;
@@ -28,6 +29,16 @@ namespace PriseEnMain.Controllers
         // GET: Instruments
         public async Task<IActionResult> Index()
         {
+            //var typeInstrument = await _context.TypeInstruments
+            //    .Include(item => item.TypeInstrumentTypeAttributs)
+            //        .ThenInclude(item => item.TypeAttribut)
+            //    .SingleOrDefaultAsync(item => item.Name == "BSA");
+
+            //var typesAttributsPossibles = typeInstrument
+            //    .TypeInstrumentTypeAttributs
+            //    .Select(item => item.TypeAttribut)
+            //    .ToList();
+
             return View(await _context.Instruments.ToListAsync());
         }
 
@@ -53,14 +64,47 @@ namespace PriseEnMain.Controllers
 
         public async Task<IActionResult> CreateChooseEmetteur(string searchString, int typeId, CancellationToken cancellationToken)
         {
-            var query = _context.Emetteurs
+            var typeInstrument = await _context.TypeInstruments
+                .Include(item => item.TypeInstrumentTypeAttributs)
+                    .ThenInclude(item => item.TypeAttribut)
+                .SingleOrDefaultAsync(item => item.Id == typeId);
+
+            var typesAttributs = typeInstrument
+                .TypeInstrumentTypeAttributs
+                .Select(item => new CreateAttributViewModel
+                {
+                    AttributeTypeId = item.TypeAttributId,
+                    AttributeTypeName = item.TypeAttribut.Name,
+                    AttributeTypeValueType = item.TypeAttribut.Type,
+
+                })
+                .ToList();
+
+            var list = typeInstrument
+                .TypeInstrumentTypeAttributs;
+            bool search = false;
+
+            foreach (var typ in list)
+            {
+                if ( typ.TypeAttribut.Name == "Emetteur")
+                {
+                    search = true;
+                }
+            }
+
+            if(search == false)
+            {
+                return RedirectToAction("CreateChooseInstrumentSousjacent", new { typeId = typeId });
+            }
+
+                    var query = _context.Emetteurs
                 .AsQueryable();
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 query = query.Where(s => s.Name.Contains(searchString));
             }
-            
+
             var emetteurs = await query
                 .Select(item => new EmetteurVM { Id = item.Id, Name = item.Name })
                 .ToListAsync(cancellationToken);
@@ -68,7 +112,8 @@ namespace PriseEnMain.Controllers
             var viewModel = new CreateInstrumentVM
             {
                 TypeInstrumentId = typeId,
-                Emetteurs = emetteurs
+                Emetteurs = emetteurs,
+                Attributs = typesAttributs
             };
 
             return View(viewModel);
@@ -76,11 +121,46 @@ namespace PriseEnMain.Controllers
 
 
 
-        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int typeId,int emetteurId, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateChooseInstrumentSousjacent(string searchString, int typeId, int emetteurId, CancellationToken cancellationToken)
         {
+            var typeInstrument = await _context.TypeInstruments
+               .Include(item => item.TypeInstrumentTypeAttributs)
+                   .ThenInclude(item => item.TypeAttribut)
+               .SingleOrDefaultAsync(item => item.Id == typeId);
+
+            var typesAttributs = typeInstrument
+                .TypeInstrumentTypeAttributs
+                .Select(item => new CreateAttributViewModel
+                {
+                    AttributeTypeId = item.TypeAttributId,
+                    AttributeTypeName = item.TypeAttribut.Name,
+                    AttributeTypeValueType = item.TypeAttribut.Type,
+
+                })
+                .ToList();
+
             var instru = await _context.Instruments.FindAsync(typeId);
             var query = _context.Instruments
                 .AsQueryable();
+
+
+            var list = typeInstrument
+                .TypeInstrumentTypeAttributs;
+
+            bool search = false;
+
+            foreach (var typ in list)
+            {
+                if (typ.TypeAttribut.Name == "Instrument")
+                {
+                    search = true;
+                }
+            }
+
+            if (search == false)
+            {
+                return RedirectToAction("CreateChooseContrat", new { typeId = typeId });
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -89,9 +169,9 @@ namespace PriseEnMain.Controllers
 
             //TypeInstrument TypeInstru = (TypeInstrument)ViewBag.selectItem;
 
-          
-             query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
-           
+
+            query = query.Where(s => s.TypeInstrument.Id.Equals(typeId));
+
 
             var intrumens = await query
                   .Select(item => new InstrumentsSousJacentsVM { Id = item.Id, Name = item.Name })
@@ -101,7 +181,8 @@ namespace PriseEnMain.Controllers
             {
                 TypeInstrumentId = typeId,
                 EmetteurId = emetteurId,
-                InstrumentsSousJacents = intrumens
+                InstrumentsSousJacents = intrumens,
+                Attributs = typesAttributs
             };
 
             return View(viewModel);
@@ -109,28 +190,48 @@ namespace PriseEnMain.Controllers
         }
 
 
-        public async Task<IActionResult> CreateChooseAttribut(string searchString)
+
+
+
+        public async Task<IActionResult> CreateChooseContrat(string searchString, int typeId, int emetteurId, int instrumentId, CancellationToken cancellationToken)
         {
-            //return View(await _context.Attributs.ToListAsync());
 
-            var attributs = from m in _context.Attributs
-                            select m;
 
-            if (!String.IsNullOrEmpty(searchString))
+            var typeInstrument = await _context.TypeInstruments
+              .Include(item => item.TypeInstrumentTypeAttributs)
+                  .ThenInclude(item => item.TypeAttribut)
+              .SingleOrDefaultAsync(item => item.Id == typeId);
+
+            var typesAttributs = typeInstrument
+                .TypeInstrumentTypeAttributs
+                .Select(item => new CreateAttributViewModel
+                {
+                    AttributeTypeId = item.TypeAttributId,
+                    AttributeTypeName = item.TypeAttribut.Name,
+                    AttributeTypeValueType = item.TypeAttribut.Type,
+
+                })
+                .ToList();
+
+            var list = typeInstrument
+               .TypeInstrumentTypeAttributs;
+            bool search = false;
+            foreach (var typ in list)
             {
-                attributs = attributs.Where(s => s.Name.Contains(searchString));
+                if (typ.TypeAttribut.Name == "Contrat")
+                {
+                    search = true;
+                }
             }
 
-            return View(await attributs.ToListAsync());
-        }
-
-
-
-        public async Task<IActionResult> CreateChooseContrat(string searchString, int typeId, int emetteurId,int instrumentId, CancellationToken cancellationToken)
-        {
-           
+            if (search == false)
+            {
+                return RedirectToAction("CreateChooseAttribut", new { typeId = typeId });
+            }
             var query = _context.Contrats
                 .AsQueryable();
+
+
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -145,13 +246,86 @@ namespace PriseEnMain.Controllers
                 TypeInstrumentId = typeId,
                 EmetteurId = emetteurId,
                 InstrumentSousJacentId = instrumentId,
-                Contrats = contrats
+                Contrats = contrats,
+                Attributs = typesAttributs
             };
 
             return View(viewModel);
 
         }
 
+        public async Task<IActionResult> CreateChooseAttribut(int typeId, int emetteurId, int instrumentId, int contratId, CancellationToken cancellationToken)
+        {
+            var typeInstrument = await _context.TypeInstruments
+              .Include(item => item.TypeInstrumentTypeAttributs)
+                  .ThenInclude(item => item.TypeAttribut)
+              .SingleOrDefaultAsync(item => item.Id == typeId);
+
+            var typesAttributs = typeInstrument
+                .TypeInstrumentTypeAttributs
+                .Select(item => new CreateAttributViewModel
+                {
+                    AttributeTypeId = item.TypeAttributId,
+                    AttributeTypeName = item.TypeAttribut.Name,
+                    AttributeTypeValueType = item.TypeAttribut.Type,
+
+                })
+                .ToList();
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = typeId,
+                EmetteurId = emetteurId,
+                InstrumentSousJacentId = instrumentId,
+                ContratId = contratId,
+                Attributs = typesAttributs
+            };
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateChooseAttribut(CreateInstrumentVM view, CancellationToken cancellationToken)
+        {
+
+
+            //if (ModelState.IsValid)
+            //{
+            var Attributes =
+               view.Attributs.Select(attr => new CreateAttributViewModel
+               {
+                   AttributeTypeId = attr.AttributeTypeId,
+                   AttributeTypeName = attr.AttributeTypeName,
+                   Value = attr.Value
+               });
+
+            //RedirectToAction("Save", new { typeId = view.TypeInstrumentId, emetteurId = view.EmetteurId, instrumentId = view.InstrumentSousJacentId, contratId = view.ContratId});
+            //}
+
+            
+
+            var viewModel = new CreateInstrumentVM
+            {
+                TypeInstrumentId = view.TypeInstrumentId,
+                EmetteurId = view.EmetteurId,
+                InstrumentSousJacentId = view.InstrumentSousJacentId,
+                ContratId = view.ContratId,
+                Attributs = Attributes.ToList()
+            };
+
+
+
+            TempData["Attributs"] = JsonConvert.SerializeObject(Attributes);
+
+
+            return RedirectToAction("Create", new { typeId = view.TypeInstrumentId, emetteurId = view.EmetteurId, instrumentId = view.InstrumentSousJacentId, contratId = view.ContratId });
+
+
+            // return View(viewModel);
+
+        }
 
 
         // GET: Instruments/Details/5
@@ -175,7 +349,7 @@ namespace PriseEnMain.Controllers
 
 
         // GET: Instruments/Create
-        public async Task<IActionResult> Create(int typeId, int emetteurId, int instrumentId, int contratId)
+        public async Task<IActionResult> Create(int typeId, int? emetteurId, int? instrumentId, int? contratId, List<CreateAttributViewModel> Attributs)
         {
             var instru = await _context.Instruments.FindAsync(instrumentId);
             var emet = await _context.Emetteurs.FindAsync(emetteurId);
@@ -187,6 +361,10 @@ namespace PriseEnMain.Controllers
                 return NotFound();
             }
 
+            var attributs = JsonConvert.DeserializeObject<IEnumerable<CreateAttributViewModel>>((string)TempData["Attributs"]);
+            List<CreateAttributViewModel> attributes = attributs as List<CreateAttributViewModel>;
+            // List<CreateAttributViewModel> attributs = TempData["Attributs"] as List<CreateAttributViewModel>;
+            TempData["Attributes"] = JsonConvert.SerializeObject(attributes);
             var viewModel = new CreateInstrumentVM
             {
                 TypeInstrumentId = typeId,
@@ -198,7 +376,8 @@ namespace PriseEnMain.Controllers
                 EmetteurName = emet.Name,
                 ContratName = contrat.Name,
                 TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
-               
+                Attributs = attributes
+
             };
 
             return View(viewModel);
@@ -215,6 +394,59 @@ namespace PriseEnMain.Controllers
             {
                 return NotFound();
             }
+            var attributs = JsonConvert.DeserializeObject<IEnumerable<CreateAttributViewModel>>((string)TempData["Attributes"]);
+            List<CreateAttributViewModel> attributes = attributs as List<CreateAttributViewModel>;
+
+
+
+            var listAttributs = attributes
+             .Select(item => new Attribut
+             {
+                 TypeAttributId = item.AttributeTypeId,
+                 ValueOther = item.Value,
+
+            }).ToList();
+
+            var types = await _context.TypeAttributs.ToListAsync();
+            foreach(var typ in types)
+            {
+                if (emetteurId >= 0 && typ.Name =="Emetteur")
+                {
+                    var attr = new Attribut
+                    {
+                        TypeAttributId = typ.Id,
+                        ValueEmetteurId = emetteurId
+                    };
+                    listAttributs.Add(attr);
+                }
+
+                if (contratId >= 0 && typ.Name == "Contrat")
+                {
+                    var attr = new Attribut
+                    {
+                        TypeAttributId = typ.Id,
+                        ValueContratId = contratId
+                    };
+                    listAttributs.Add(attr);
+                }
+
+                if (instrumentId >= 0 && typ.Name == "Instrument")
+                {
+                    var attr = new Attribut
+                    {
+                        TypeAttributId = typ.Id,
+                        ValueInstrumentId= instrumentId
+                    };
+                    listAttributs.Add(attr);
+                }
+                
+            }
+            foreach (var item in listAttributs)
+            {
+                _context.Add(item);
+                await _context.SaveChangesAsync();
+            }
+            
 
             var viewModel = new CreateInstrumentVM
             {
@@ -234,11 +466,12 @@ namespace PriseEnMain.Controllers
 
             if (ModelState.IsValid)
             {
-                instrument.Name = viewModel.TypeInstrumentName + " {} " + viewModel.EmetteurName;
+               
+                instrument.Name = viewModel.TypeInstrumentName ;
                 instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
-                instrument.EmetteurId = viewModel.EmetteurId;
-                instrument.ContratId = viewModel.ContratId;
-                instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+                instrument.Attributs = listAttributs as ICollection<Attribut>;
+                //instrument.ContratId = viewModel.ContratId;
+                //instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
                 _context.Add(instrument);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Instruments", new { area = "" });
@@ -247,34 +480,34 @@ namespace PriseEnMain.Controllers
         }
 
 
-            // POST: Instruments/Create
-            // To protect from overposting attacks, enable the specific properties you want to bind to.
-            // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-            //[HttpPost]
-            //[ValidateAntiForgeryToken]
-            //public async Task<IActionResult> Create(CreateInstrumentVM viewModel)
-            //{
-            //    Instrument instrument = new Instrument();
+        // POST: Instruments/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(CreateInstrumentVM viewModel)
+        //{
+        //    Instrument instrument = new Instrument();
 
-            //    if (ModelState.IsValid)
-            //    {
-            //        instrument.Name = viewModel.InstrumentName;
-            //        instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
-            //        instrument.EmetteurId = viewModel.EmetteurId;
-            //        instrument.ContratId = viewModel.ContratId;
-            //        instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
-            //        _context.Add(instrument);
-            //        await _context.SaveChangesAsync();
+        //    if (ModelState.IsValid)
+        //    {
+        //        instrument.Name = viewModel.InstrumentName;
+        //        instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
+        //        instrument.EmetteurId = viewModel.EmetteurId;
+        //        instrument.ContratId = viewModel.ContratId;
+        //        instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+        //        _context.Add(instrument);
+        //        await _context.SaveChangesAsync();
 
-            //        return RedirectToAction(nameof(Index));
-            //    }
-            //    return View(viewModel);
-            //}
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(viewModel);
+        //}
 
 
 
-            // GET: InstrumentSous_jacent/Edit/5
-            public async Task<IActionResult> Edit(int id)
+        // GET: InstrumentSous_jacent/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
             var instrument = await _context.Instruments
                 .FindAsync(id);
@@ -288,14 +521,14 @@ namespace PriseEnMain.Controllers
             {
                 Id = instrument.Id,
                 Name = instrument.Name,
-                TypeInstrumentId = instrument.TypeInstrumentId,
-                EmetteurId = instrument.EmetteurId,
-                ContratId = instrument.ContratId,
-                InstrumentSousJacentId = instrument.InstrumentSousJacentId,
-                TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
-                Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
-                Contrats = new SelectList(_context.Contrats, "Id", "Name"),
-                InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
+                //TypeInstrumentId = instrument.TypeInstrumentId,
+                //EmetteurId = instrument.EmetteurId,
+                //ContratId = instrument.ContratId,
+                //InstrumentSousJacentId = instrument.InstrumentSousJacentId,
+                //TypesInstruments = new SelectList(_context.TypeInstruments, "Id", "Name"),
+                //Emetteurs = new SelectList(_context.Emetteurs, "Id", "Name"),
+                //Contrats = new SelectList(_context.Contrats, "Id", "Name"),
+                //InstrumentsSousJacents = new SelectList(_context.Instruments, "Id", "Name")
             };
 
             return View(viewModel);
@@ -320,9 +553,9 @@ namespace PriseEnMain.Controllers
             {
                 instrument.Name = viewModel.Name;
                 instrument.TypeInstrumentId = viewModel.TypeInstrumentId;
-                instrument.EmetteurId = viewModel.EmetteurId;
-                instrument.ContratId = viewModel.ContratId;
-                instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
+                //instrument.EmetteurId = viewModel.EmetteurId;
+                //instrument.ContratId = viewModel.ContratId;
+                //instrument.InstrumentSousJacentId = viewModel.InstrumentSousJacentId;
 
                 try
                 {

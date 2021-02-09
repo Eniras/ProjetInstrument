@@ -95,7 +95,7 @@ namespace PriseEnMain.Controllers
         public IActionResult SelectItem(Contrat contrat)
         {
 
-            InstrumentsController._instrument.Contrat = contrat;
+            //InstrumentsController._instrument.Contrat = contrat;
 
 
             return RedirectToAction("CreateChooseContrat", "Instruments", new { area = "" });

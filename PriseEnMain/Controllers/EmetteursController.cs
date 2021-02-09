@@ -70,7 +70,7 @@ namespace PriseEnMain.Controllers
         public IActionResult SelectItem(Emetteur emetteur)
         {
 
-            InstrumentsController._instrument.Emetteur = emetteur;
+            //InstrumentsController._instrument.Emetteur = emetteur;
        
 
             return RedirectToAction("CreateChooseEmetteur", "Instruments", new { area = "" });
