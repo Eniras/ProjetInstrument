@@ -17,6 +17,7 @@
     </p>
 </form>
 
+<<<<<<< HEAD
 @for (int i = 0; i < Model.Attributs.Count; i++)
 {
     if (Model.Attributs[i].AttributeTypeValueType == "Contrat")
@@ -38,6 +39,22 @@
             <div class="btn-container">
                 @Html.ActionLink("Back", "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
             </div>
+=======
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        @foreach (var item in Model.Contrats)
+        {
+            @Html.ActionLink(item.Name, "CreateChooseAttribut", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId, contratId = item.Id }, new { @class = "list-group-item list-group-item-action text-primary" })
+        }
+    </div>
+</form>
+<br />
+<div class="btn-container">
+    <div class="btn-container">
+        @Html.ActionLink("Back", "CreateChooseInstrumentSousjacent", "Instruments", new { typeId = Model.TypeInstrumentId, emetteurId = Model.EmetteurId, instrumentId = Model.InstrumentSousJacentId }, new { @class = "btn btn-outline-success rounded-0" })
+    </div>
+>>>>>>> e3accd7050a85c28ae57251593eeaa2ce74cd1d4
 
 
         </div>

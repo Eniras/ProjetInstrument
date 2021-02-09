@@ -7,6 +7,7 @@ namespace PriseEnMain.Models
 {
     public class Attribut
     {
+<<<<<<< HEAD
         public int Id { get; set; }
         public int TypeAttributId { get; set; }
         public TypeAttribut TypeAttribut { get; set; }
@@ -21,5 +22,12 @@ namespace PriseEnMain.Models
         public Emetteur ValueEmetteur { get; set; }
 
         public string ValueOther { get; set; }
+=======
+        public int Id { get; set; } 
+        public string Name { get; set; }
+        public string TypeAttribut { get; set; }
+        public TypeInstrument TypeInstrument { get; set; }
+        public string Value { get; set; }
+>>>>>>> e3accd7050a85c28ae57251593eeaa2ce74cd1d4
     }
 }
